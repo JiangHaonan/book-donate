@@ -1,0 +1,17 @@
+## 启动顺序： #1
+
+spring:
+  application:
+    name: eureka-server
+  profiles:
+    active: dev
+
+server:
+  port: 10011
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+  instance:
+    hostname: eureka

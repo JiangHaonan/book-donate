@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mutou.book.mapper.BooksMapperCustom" >
+
+    <select id="queryBooksByTag" parameterType="Map" resultType="com.mutou.book.pojo.vo.SearchBooksVO">
+        SELECT
+        b.id as bookId,
+        b.title as title,
+        b.author as author,
+        b.image_url as imageUrl,
+        b.average as average,
+        b.price as price,
+        b.price_donate as priceDonate
+        FROM
+        books b
+        left join
+        book_tags bt
+        on b.id = bt.book_id
+        WHERE
+        1 = 1
+        <if test=" paramsMap.tag != null and paramsMap.tag != '' ">
+            AND bt.tag = #{paramsMap.tag}
+        </if>
+        order by
+        <choose>
+            <when test=" paramsMap.sort == &quot;a&quot; ">
+                b.average desc
+            </when>
+            <otherwise>
+                b.title asc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="queryBooks" parameterType="Map" resultType="com.mutou.book.pojo.vo.SearchBooksVO">
+        SELECT
+        b.id as bookId,
+        b.title as title,
+        b.author as author,
+        b.image_url as imageUrl,
+        b.average as average,
+        b.price as price,
+        b.price_donate as priceDonate
+        FROM
+        books b
+        WHERE
+        1 = 1
+        <if test=" paramsMap.keywords != null and paramsMap.keywords != '' ">
+            AND b.isbn like '%${paramsMap.keywords}%'
+            or b.title like '%${paramsMap.keywords}%'
+            or b.author like '%${paramsMap.keywords}%'
+        </if>
+        order by
+        <choose>
+            <when test=" paramsMap.sort == &quot;a&quot; ">
+                b.average desc
+            </when>
+            <otherwise>
+                b.title asc
+            </otherwise>
+        </choose>
+    </select>
+
+    <update id="decreaseBookStock">
+
+        update
+            books
+        set
+            stock = stock - #{pendingCounts}
+        where
+            id = #{bookId}
+        and
+            stock >= #{pendingCounts}
+
+    </update>
+
+
+</mapper>

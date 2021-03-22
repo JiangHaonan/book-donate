@@ -1,0 +1,15 @@
+端口分配：括号内为k8s的对外端口
+
+eureka-server: 10011 (31001)
+gateway: 10012 (31002)
+mqadmin: 15672 (31003)
+rabbitmq: 5672 (31004)
+redis: 6379 (31005)
+seata: 8091 (31006)
+
+user: 10001
+auth: 10002
+area: 10003
+order: 10004
+delivery: 10005
+book: 10006

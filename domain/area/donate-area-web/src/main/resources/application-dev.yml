@@ -1,0 +1,10 @@
+server:
+  port: 10003
+
+spring:
+  datasource:                                           # 数据源的相关配置
+    url: jdbc:mysql://xxx.xxx.xxx.xxx:3306/donate-area?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    password: xxxxxxxx
+
+
+

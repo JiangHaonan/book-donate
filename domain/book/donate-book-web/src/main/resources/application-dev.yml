@@ -1,0 +1,92 @@
+server:
+  port: 10006
+
+spring:
+  datasource:                                           # 数据源的相关配置
+    url: jdbc:mysql://xxx.xxx.xxx.xxx:3306/donate-book?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    password: xxxxxxxx
+  redis:
+    # Redis 单机单实例
+    host: redis
+    port: 6379
+    database: 0
+    password: xxxxxxxx
+
+# seata
+seata:
+  service:
+    vgroup-mapping:
+      seata-book: default
+    grouplist:
+      default: seata-server:8091
+
+#mybatis:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 输出具体sql
+
+# Ribbon全局配置
+ribbon:
+  ConnectTimeout: 2000
+  ReadTimeout: 7000
+
+# Ribbon指定服务配置超时判定，优先级更高，这里会调用到order服务
+donate-order-service:
+  ribbon:
+    ConnectTimeout: 3000
+    ReadTimeout: 9000
+    MaxAutoRetries: 1
+    MaxAutoRetriesNextServer: 2
+    OkToRetryOnAllOperations: true
+
+# Feign的超时判定，优先级高于Ribbon
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      # 全局默认配置
+      default:
+        connectTimeout: 2000
+        readTimeout: 9000
+
+## 开启所有actuator-endpoint
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  security:
+    enabled: false
+
+hystrix:
+  command:
+    # 有的属性是默认值，写不写都行
+    default:
+      fallback:
+        enabled: true
+      circuitBreaker:
+        enabled: true
+        # 超过50%错误，那么开启熔断
+        errorThresholdPercentage: 50
+        # 5个request之后才进行统计
+        requestVolumeThreshold: 5
+        # 10秒之后进入半开状态
+        sleepWindowInMilliseconds: 10000
+        # forceClosed, forceOpen 强制关闭/开启熔断开关
+      execution:
+        timeout:
+          enabled: true
+        # 可以指定隔离方式是线程池还是信号量
+        isolation:
+          thread:
+            interruptOnTimeout: true
+            interruptOnFutureCancel: true
+            timeoutInMilliseconds: 10000
+      metrics:
+        rollingStats:
+          # 时间窗口统计 即在20秒的滑动窗口下，请求超过5个才开始熔断的判断
+          timeInMilliseconds: 20000
+

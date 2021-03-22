@@ -1,0 +1,22 @@
+server:
+  port: 10002
+
+spring:
+  redis:
+    # Redis 单机单实例
+    host: redis
+    port: 6379
+    database: 0
+    password: xxxxxxxx
+
+# 开启所有actuator-endpoint
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  security:
+    enabled: false

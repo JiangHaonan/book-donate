@@ -1,0 +1,27 @@
+############################################################
+#
+# Eureka注册中心
+#
+############################################################
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry-center:10011/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}.${server.port}
+    prefer-ip-address: true
+
+############################################################
+#
+# Config配置中心 先放一放
+#
+############################################################
+#spring:
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: config-server
+#      profile: dev
+#      # 默认
+#      label: master

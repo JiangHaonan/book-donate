@@ -1,0 +1,59 @@
+# 可以尝试集成config-server来配置
+
+spring:
+  application:
+    name: platform-gateway
+
+  # 跨域配置
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            # 返回的资源共享给请求来源
+            allowed-origins:
+              - "*"
+            # 比如cookie, authorization之类的认证信息
+            allow-credentials: true
+            allowed-headers: "*"
+            allowed-methods: "*"
+            expose-headers: "*"
+            # 表示Options可以在浏览器缓存多长时间
+            max-age: 600
+      locator:
+        enabled: false
+        lower-case-service-id: true
+      x-forwarded:
+        # 这里由于gateway会放x-forwarded-prefix到header里，swagger中又会拿header的x-forwarded-prefix作为bashPath
+        # 造成的结果就是swagger的/v2/api-docs返回的bathPath为donate-user-service(application name), 导致通过swagger
+        # 发送的请求都会在开头带上donate-user-service的路径，比如https://gatewayIp:port//donate-user-service/password
+        # 这样的话又加重了gateway中的配置工作。所以我们这里设置为false，/v2/api-docs返回的bathPath就是"/"
+        prefixEnabled: false
+
+
+server:
+  port: 10012
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry-center:10011/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}.${server.port}
+    prefer-ip-address: true
+
+## 开启所有actuator-endpoint
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  security:
+    enabled: false
+
+
+
+
